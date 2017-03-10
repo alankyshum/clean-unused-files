@@ -1,20 +1,22 @@
 const glob = require('glob')
   , shell = require('shelljs')
   , sprintf = require("sprintf-js").sprintf
-  , path = require('path');
+  , path = require('path')
+  , fs = require('fs');
 
 // SETTINGS
-const config = {
-  fileNameLength: 50,
-  searchFolder: FOLDER_TO_SEARCH_FOR_REFERENCE,
-  imgFolder: FOLDER_THAT_CONTAINS_IMAGES_TO_BE_REMOVED,
-  outputFolder: path.join(__dirname, './extract')
-};
+let config;
+try {
+  config = JSON.parse(fs.readFileSync('./config.json', 'utf8'));
+} catch(e) {
+  console.log('Please refer to config.example.json to create your own config.json');
+  console.error(e);
+  process.exit();
+}
 
 function searchFiles(path) {
   return new Promise((res, rej) => {
-    const fileExt = ['png', 'jpg', 'svg', 'gif', 'jpeg'];
-    const filesMatch = `${path}/**/*.{${fileExt.join(',')}}`;
+    const filesMatch = `${path}/**/*.{${config.fileExt.join(',')}}`;
     console.log(`Mathcing this pattern: ${filesMatch}`);
     glob(filesMatch, (err, files) => {
       if (err) {
