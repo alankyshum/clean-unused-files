@@ -3,5 +3,6 @@
   "searchFolder": "FOLDER_TO_SEARCH_FOR_REFERENCE",
   "imgFolder": "FOLDER_THAT_CONTAINS_IMAGES_TO_BE_REMOVED",
   "outputFolder": "./extract",
-  "fileExt": ["png", "jpg", "svg", "gif", "jpeg"]
+  "fileExt": ["png", "jpg", "svg", "gif", "jpeg"],
+  "treeShakingMode": true
 }

@@ -69,13 +69,29 @@ searchFiles(config.imgFolder)
   }, err => { console.log(err); })
   .then(showFiles)
   .then(filteredFiles => {
-    ['used', 'notUsed'].forEach(fileUse => {
-      filteredFiles[fileUse].forEach(file => {
-        let relativePath = file.path.replace(config.imgFolder, '').split('/');
-        relativePath = relativePath.slice(0, relativePath.length-1);
-        const targetFolder = path.join(config.outputFolder, fileUse, relativePath.join('/'));
-        (!shell.test('-e', targetFolder)) && shell.mkdir('-p', targetFolder);
-        shell.cp(file.path, targetFolder);
+    if (config.treeShakingMode) {
+      // remove unused files
+      glob(path.join(config.imgFolder, '**', '**'), (err, files) => {
+        const notUsedFiles = filteredFiles.notUsed.map(filteredFile => filteredFile.path);
+        files.forEach(filePath => {
+          let relativePath = filePath.replace(config.imgFolder, '').split('/');
+          relativePath = relativePath.slice(0, relativePath.length-1);
+          const folder = notUsedFiles.includes(filePath) ? 'notUsed' : 'replace';
+          const targetFolder = path.join(config.outputFolder, folder, relativePath.join('/'));
+          (!shell.test('-e', targetFolder)) && shell.mkdir('-p', targetFolder);
+          shell.cp(filePath, targetFolder);
+        });
       });
-    })
+    } else {
+      // extract used files
+      ['used', 'notUsed'].forEach(fileUse => {
+        filteredFiles[fileUse].forEach(file => {
+          let relativePath = file.path.replace(config.imgFolder, '').split('/');
+          relativePath = relativePath.slice(0, relativePath.length-1);
+          const targetFolder = path.join(config.outputFolder, fileUse, relativePath.join('/'));
+          (!shell.test('-e', targetFolder)) && shell.mkdir('-p', targetFolder);
+          shell.cp(file.path, targetFolder);
+        });
+      });
+    }
   });

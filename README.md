@@ -24,5 +24,6 @@ imgFolder: FOLDER_THAT_CONTAINS_IMAGES_TO_BE_REMOVED
     - default to `./extract`
 
 ## Todo
+1. [x] Tree shaking mode added (removed unused files only, not extracting used files)
 1. [ ] Make this a `gulp` pipeline module, and able to be integrated into maintenance workflow
 1. [ ] Options to silient stdout
